@@ -87,15 +87,16 @@
 
   .table-wrap { overflow-x: auto; }
 
+  /* Bascelll: 56×64px (upp från 52×58) */
   .grid {
     display: grid;
-    grid-template-columns: repeat(18, 52px);
+    grid-template-columns: repeat(18, 56px);
     gap: 3px;
-    min-width: 990px;
+    min-width: 1062px; /* 18*56 + 17*3 */
   }
 
   .element {
-    width: 52px; height: 58px;
+    width: 56px; height: 64px;
     border: 1px solid var(--pt-border);
     border-left: 3px solid var(--cat-color);
     border-radius: 4px;
@@ -129,10 +130,10 @@
 
   .element:hover::before { opacity: 0.22; }
 
-  .el-num  { font-family: 'IBM Plex Mono', monospace; font-size: 8px;  color: var(--pt-num);    line-height: 1; margin-bottom: 1px; }
-  .el-sym  { font-family: 'Bebas Neue', sans-serif;   font-size: 20px; color: var(--cat-color); line-height: 1; letter-spacing: 1px; }
-  .el-name { font-family: 'IBM Plex Mono', monospace; font-size: 7px;  color: var(--pt-muted);  line-height: 1; margin-top: 1px; }
-  .el-mass { font-family: 'IBM Plex Mono', monospace; font-size: 7px;  color: var(--pt-mass);   line-height: 1; }
+  .el-num  { font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; color: var(--pt-num);    line-height: 1; margin-bottom: 1px; }
+  .el-sym  { font-family: 'Bebas Neue', sans-serif;   font-size: 22px;  color: var(--cat-color); line-height: 1; letter-spacing: 1px; }
+  .el-name { font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; color: var(--pt-muted);  line-height: 1; margin-top: 1px; }
+  .el-mass { font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; color: var(--pt-mass);   line-height: 1; }
 
   .alkali-metal    { --cat-color: var(--alkali);     }
   .alkaline-earth  { --cat-color: var(--alkaline);   }
@@ -154,15 +155,15 @@
   .series-gap { height: 16px; }
   .dim { opacity: 0.12; }
 
-  /* === Tablet (600–900px): skala ner proportionellt === */
-  @media (max-width: 900px) and (min-width: 600px) {
+  /* === Tablet/laptop (600–1200px): skala ner proportionellt === */
+  @media (max-width: 1200px) and (min-width: 600px) {
     .table-wrap { overflow-x: visible; }
     .table-scaler {
       transform-origin: top left;
       transform: scale(var(--pt-scale, 1));
       height: calc(var(--pt-grid-h, 600px) * var(--pt-scale, 1));
     }
-    .grid { min-width: 990px; }
+    .grid { min-width: 1062px; }
   }
 
   /* === Mobil (<600px): kompakt rutnät === */
@@ -515,12 +516,12 @@ function hideTooltip() { tooltip.classList.remove('visible'); }
 // Responsiv skalning
 function updateScale() {
   const w = window.innerWidth;
-  const GRID_W = 990; // px vid full storlek
+  const GRID_W = 1062; // 18*56 + 17*3
   const scaler = document.getElementById('tableScaler');
   const gridH = document.getElementById('ptable').offsetHeight;
   document.documentElement.style.setProperty('--pt-grid-h', gridH + 'px');
 
-  if (w >= 600 && w <= 900) {
+  if (w >= 600 && w <= 1200) {
     const available = w - 48; // padding 24px × 2
     const scale = Math.min(1, available / GRID_W);
     document.documentElement.style.setProperty('--pt-scale', scale);
@@ -537,7 +538,6 @@ function updateScale() {
 }
 
 window.addEventListener('resize', updateScale);
-// Kör efter att grid byggts
 requestAnimationFrame(() => requestAnimationFrame(updateScale));
 
 // Touch-stöd: visa tooltip vid tap på mobil, stäng vid tap utanför
