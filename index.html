@@ -153,6 +153,50 @@
   .series-gap { height: 16px; }
   .dim { opacity: 0.12; }
 
+  /* === Tablet (600–900px): skala ner proportionellt === */
+  @media (max-width: 900px) and (min-width: 600px) {
+    .table-wrap { overflow-x: visible; }
+    .table-scaler {
+      transform-origin: top left;
+      transform: scale(var(--pt-scale, 1));
+      height: calc(var(--pt-grid-h, 600px) * var(--pt-scale, 1));
+    }
+    .grid { min-width: 990px; }
+  }
+
+  /* === Mobil (<600px): kompakt rutnät === */
+  @media (max-width: 599px) {
+    main.content { padding: 16px 12px 32px; }
+    .pt-header { margin-bottom: 10px; }
+    h1 { font-size: 28px; }
+    .legend { gap: 5px; margin-bottom: 14px; }
+    .legend-item { font-size: 9px; padding: 2px 5px; }
+    .table-wrap { overflow-x: visible; }
+    .table-scaler {
+      transform-origin: top left;
+      transform: scale(var(--pt-scale-mobile, 1));
+      height: calc(var(--pt-grid-h, 600px) * var(--pt-scale-mobile, 1));
+    }
+    .grid {
+      grid-template-columns: repeat(18, 30px);
+      gap: 2px;
+      min-width: unset;
+    }
+    .element { width: 30px; height: 34px; border-left-width: 2px; border-radius: 2px; }
+    .el-name, .el-mass { display: none; }
+    .el-num  { font-size: 6px; margin-bottom: 0; }
+    .el-sym  { font-size: 13px; }
+    .gap-label { font-size: 7px; }
+    .series-gap { height: 8px; }
+    #tooltip {
+      position: fixed;
+      left: 50% !important;
+      top: 50% !important;
+      transform: translate(-50%, -50%);
+      width: 200px;
+    }
+  }
+
   #tooltip {
     position: fixed;
     pointer-events: none;
@@ -213,7 +257,9 @@
     </div>
 
     <div class="table-wrap">
-      <div class="grid" id="ptable"></div>
+      <div class="table-scaler" id="tableScaler">
+        <div class="grid" id="ptable"></div>
+      </div>
     </div>
 
   </main>
@@ -462,6 +508,45 @@ function moveTooltip(e) {
 }
 
 function hideTooltip() { tooltip.classList.remove('visible'); }
+
+// Responsiv skalning
+function updateScale() {
+  const w = window.innerWidth;
+  const GRID_W = 990; // px vid full storlek
+  const scaler = document.getElementById('tableScaler');
+  const gridH = document.getElementById('ptable').offsetHeight;
+  document.documentElement.style.setProperty('--pt-grid-h', gridH + 'px');
+
+  if (w >= 600 && w <= 900) {
+    const available = w - 48; // padding 24px × 2
+    const scale = Math.min(1, available / GRID_W);
+    document.documentElement.style.setProperty('--pt-scale', scale);
+    scaler.style.height = (gridH * scale) + 'px';
+  } else if (w < 600) {
+    const MOBILE_GRID_W = 18 * 30 + 17 * 2; // 572px
+    const available = w - 24;
+    const scale = Math.min(1, available / MOBILE_GRID_W);
+    document.documentElement.style.setProperty('--pt-scale-mobile', scale);
+    scaler.style.height = (gridH * scale) + 'px';
+  } else {
+    scaler.style.height = '';
+  }
+}
+
+window.addEventListener('resize', updateScale);
+// Kör efter att grid byggts
+requestAnimationFrame(() => requestAnimationFrame(updateScale));
+
+// Touch-stöd: visa tooltip vid tap på mobil, stäng vid tap utanför
+document.addEventListener('touchstart', (e) => {
+  const el = e.target.closest('.element');
+  if (el) {
+    e.preventDefault();
+    el.dispatchEvent(new MouseEvent('mouseenter', { clientX: window.innerWidth/2, clientY: window.innerHeight/2 }));
+  } else {
+    hideTooltip();
+  }
+}, { passive: false });
 
 let activeFilter = null;
 document.querySelectorAll('.legend-item').forEach(item => {
