@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Periodiska Systemet – ehrencrona.org</title>
+<link rel="stylesheet" href="https://ehrencrona.org/shared.css">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  /* === Periodiska tabellens egna variabler === */
+  :root {
+    --pt-bg:           light-dark(#f0f0f0, #0a0a0f);
+    --pt-surface:      light-dark(#ffffff, #13131a);
+    --pt-border:       light-dark(#d0d4da, #2a2a3a);
+    --pt-muted:        light-dark(#6060a0, #6060a0);
+    --pt-mass:         light-dark(#aaa, #404060);
+    --pt-num:          light-dark(#999, #6060a0);
+    --pt-hover-border: light-dark(#00000033, #ffffff44);
+    --pt-tooltip-bg:   light-dark(#ffffff, #1a1a2e);
+    --pt-tooltip-sep:  light-dark(#ebebf5, #1f1f30);
+
+    --alkali:     #ff4d6d;
+    --alkaline:   #ff8c42;
+    --transition: #4a9eff;
+    --post-trans: #5aaa80;
+    --metalloid:  #c9a800;
+    --nonmetal:   #c77dff;
+    --halogen:    #ff6b9d;
+    --noble:      #36d1dc;
+    --lanthanide: #f4a261;
+    --actinide:   #e76f51;
+  }
+
+  body {
+    background: var(--pt-bg);
+    color: light-dark(#1a1a1a, #e8e8f0);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: auto;
+  }
+
+  .page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* Brand header – samma mönster som apex/lubpub */
+  header.brand-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 32px 24px 28px;
+    border-bottom: 1px solid var(--pt-border);
+    background: var(--pt-surface);
+  }
+
+  header.brand-header a { display: block; line-height: 0; }
+  header.brand-header img { height: 40px; width: auto; }
+
+  /* Välj rätt logga beroende på tema */
+  .logo-light { display: block; }
+  .logo-dark  { display: none;  }
+  @media (prefers-color-scheme: dark) {
+    .logo-light { display: none;  }
+    .logo-dark  { display: block; }
+  }
+
+  main.content {
+    flex: 1;
+    padding: 32px 24px 48px;
+  }
+
+  .pt-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 3px;
+    color: light-dark(#1a1a1a, #e8e8f0);
+    line-height: 1;
+  }
+
+  .subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--pt-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    color: var(--pt-muted);
+    font-family: 'IBM Plex Mono', monospace;
+    cursor: pointer;
+    padding: 3px 8px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .legend-item:hover  { border-color: var(--pt-border); color: light-dark(#1a1a1a, #e8e8f0); }
+  .legend-item.active { border-color: currentColor; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  /* Rutnät */
+  .table-wrap { overflow-x: auto; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(18, 52px);
+    gap: 3px;
+    min-width: 990px;
+  }
+
+  /* Elementkort */
+  .element {
+    width: 52px; height: 58px;
+    border: 1px solid var(--pt-border);
+    border-left: 3px solid var(--cat-color);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    background: var(--pt-surface);
+    overflow: hidden;
+  }
+
+  .element::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--cat-color);
+    opacity: 0.10;
+    transition: opacity 0.15s;
+  }
+
+  .element:hover {
+    transform: scale(1.15);
+    z-index: 10;
+    border-color: var(--pt-hover-border);
+    border-left-color: var(--cat-color);
+    box-shadow: 0 0 20px var(--cat-color);
+  }
+
+  .element:hover::before { opacity: 0.22; }
+
+  .el-num  { font-family: 'IBM Plex Mono', monospace; font-size: 8px;  color: var(--pt-num);   line-height: 1; margin-bottom: 1px; }
+  .el-sym  { font-family: 'Bebas Neue', sans-serif;   font-size: 20px; color: var(--cat-color); line-height: 1; letter-spacing: 1px; }
+  .el-name { font-family: 'IBM Plex Mono', monospace; font-size: 7px;  color: var(--pt-muted); line-height: 1; margin-top: 1px; }
+  .el-mass { font-family: 'IBM Plex Mono', monospace; font-size: 7px;  color: var(--pt-mass);  line-height: 1; }
+
+  .alkali-metal    { --cat-color: var(--alkali);     }
+  .alkaline-earth  { --cat-color: var(--alkaline);   }
+  .transition-metal{ --cat-color: var(--transition); }
+  .post-transition { --cat-color: var(--post-trans); }
+  .metalloid       { --cat-color: var(--metalloid);  }
+  .nonmetal        { --cat-color: var(--nonmetal);   }
+  .halogen         { --cat-color: var(--halogen);    }
+  .noble-gas       { --cat-color: var(--noble);      }
+  .lanthanide      { --cat-color: var(--lanthanide); }
+  .actinide        { --cat-color: var(--actinide);   }
+
+  .gap-label {
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; color: var(--pt-muted); letter-spacing: 1px; opacity: 0.6;
+  }
+
+  .series-gap { height: 16px; }
+  .dim { opacity: 0.12; }
+
+  /* Tooltip */
+  #tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: var(--pt-tooltip-bg);
+    border: 1px solid var(--brand, #b33a32);
+    border-radius: 8px;
+    padding: 16px;
+    width: 220px;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 8px 40px light-dark(rgba(0,0,0,.12), rgba(0,0,0,.6));
+  }
+
+  #tooltip.visible { display: block; }
+
+  .tt-sym  { font-family: 'Bebas Neue', sans-serif; font-size: 48px; line-height: 1; margin-bottom: 4px; }
+  .tt-name { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+
+  .tt-row {
+    display: flex; justify-content: space-between;
+    font-size: 11px; font-family: 'IBM Plex Mono', monospace;
+    color: var(--pt-muted);
+    padding: 2px 0;
+    border-bottom: 1px solid var(--pt-tooltip-sep);
+  }
+
+  .tt-row span:last-child { color: light-dark(#1a1a1a, #e8e8f0); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="brand-header">
+    <a href="https://ehrencrona.org">
+      <img class="logo-light" src="https://ehrencrona.org/ehrencrona_logo_dark.png" alt="Ehrencrona">
+      <img class="logo-dark"  src="https://ehrencrona.org/ehrencrona_logo.png"      alt="Ehrencrona">
+    </a>
+  </header>
+
+  <main class="content">
+
+    <div class="pt-header">
+      <h1>Periodiska Systemet</h1>
+      <span class="subtitle">118 grundämnen</span>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item" data-cat="alkali-metal"     style="color:var(--alkali)"    ><span class="legend-dot" style="background:var(--alkali)"    ></span>Alkalimetaller</div>
+      <div class="legend-item" data-cat="alkaline-earth"   style="color:var(--alkaline)"  ><span class="legend-dot" style="background:var(--alkaline)"  ></span>Jordalkalimetaller</div>
+      <div class="legend-item" data-cat="transition-metal" style="color:var(--transition)" ><span class="legend-dot" style="background:var(--transition)" ></span>Övergångsmetaller</div>
+      <div class="legend-item" data-cat="post-transition"  style="color:var(--post-trans)" ><span class="legend-dot" style="background:var(--post-trans)" ></span>Posttransitionsmetaller</div>
+      <div class="legend-item" data-cat="metalloid"        style="color:var(--metalloid)"  ><span class="legend-dot" style="background:var(--metalloid)"  ></span>Halvmetaller</div>
+      <div class="legend-item" data-cat="nonmetal"         style="color:var(--nonmetal)"   ><span class="legend-dot" style="background:var(--nonmetal)"   ></span>Icke-metaller</div>
+      <div class="legend-item" data-cat="halogen"          style="color:var(--halogen)"    ><span class="legend-dot" style="background:var(--halogen)"    ></span>Halogener</div>
+      <div class="legend-item" data-cat="noble-gas"        style="color:var(--noble)"      ><span class="legend-dot" style="background:var(--noble)"      ></span>Ädelgaser</div>
+      <div class="legend-item" data-cat="lanthanide"       style="color:var(--lanthanide)" ><span class="legend-dot" style="background:var(--lanthanide)" ></span>Lantanoider</div>
+      <div class="legend-item" data-cat="actinide"         style="color:var(--actinide)"   ><span class="legend-dot" style="background:var(--actinide)"   ></span>Aktinoider</div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="grid" id="ptable"></div>
+    </div>
+
+  </main>
+</div>
+
+<div id="tooltip">
+  <div class="tt-sym" id="tt-sym"></div>
+  <div class="tt-name" id="tt-name"></div>
+  <div class="tt-row"><span>Atomnummer</span><span id="tt-num"></span></div>
+  <div class="tt-row"><span>Atommassa</span><span id="tt-mass"></span></div>
+  <div class="tt-row"><span>Period</span><span id="tt-period"></span></div>
+  <div class="tt-row"><span>Grupp</span><span id="tt-group"></span></div>
+  <div class="tt-row"><span>Kategori</span><span id="tt-cat"></span></div>
+</div>
+
+<script>
+const catNames = {
+  'alkali-metal':    'Alkalimetall',
+  'alkaline-earth':  'Jordalkalimetall',
+  'transition-metal':'Övergångsmetall',
+  'post-transition': 'Posttransitionsmetall',
+  'metalloid':       'Halvmetall',
+  'nonmetal':        'Icke-metall',
+  'halogen':         'Halogen',
+  'noble-gas':       'Ädelgas',
+  'lanthanide':      'Lantanoid',
+  'actinide':        'Aktinoid'
+};
+
+const catVar = {
+  'alkali-metal':'alkali','alkaline-earth':'alkaline','transition-metal':'transition',
+  'post-transition':'post-trans','metalloid':'metalloid','nonmetal':'nonmetal',
+  'halogen':'halogen','noble-gas':'noble','lanthanide':'lanthanide','actinide':'actinide'
+};
+
+const elements = [
+  [1,'H','Väte','1.008',1,1,'nonmetal'],
+  [2,'He','Helium','4.003',1,18,'noble-gas'],
+  [3,'Li','Litium','6.941',2,1,'alkali-metal'],
+  [4,'Be','Beryllium','9.012',2,2,'alkaline-earth'],
+  [5,'B','Bor','10.81',2,13,'metalloid'],
+  [6,'C','Kol','12.01',2,14,'nonmetal'],
+  [7,'N','Kväve','14.01',2,15,'nonmetal'],
+  [8,'O','Syre','16.00',2,16,'nonmetal'],
+  [9,'F','Fluor','19.00',2,17,'halogen'],
+  [10,'Ne','Neon','20.18',2,18,'noble-gas'],
+  [11,'Na','Natrium','22.99',3,1,'alkali-metal'],
+  [12,'Mg','Magnesium','24.31',3,2,'alkaline-earth'],
+  [13,'Al','Aluminium','26.98',3,13,'post-transition'],
+  [14,'Si','Kisel','28.09',3,14,'metalloid'],
+  [15,'P','Fosfor','30.97',3,15,'nonmetal'],
+  [16,'S','Svavel','32.07',3,16,'nonmetal'],
+  [17,'Cl','Klor','35.45',3,17,'halogen'],
+  [18,'Ar','Argon','39.95',3,18,'noble-gas'],
+  [19,'K','Kalium','39.10',4,1,'alkali-metal'],
+  [20,'Ca','Kalcium','40.08',4,2,'alkaline-earth'],
+  [21,'Sc','Skandium','44.96',4,3,'transition-metal'],
+  [22,'Ti','Titan','47.87',4,4,'transition-metal'],
+  [23,'V','Vanadin','50.94',4,5,'transition-metal'],
+  [24,'Cr','Krom','52.00',4,6,'transition-metal'],
+  [25,'Mn','Mangan','54.94',4,7,'transition-metal'],
+  [26,'Fe','Järn','55.85',4,8,'transition-metal'],
+  [27,'Co','Kobolt','58.93',4,9,'transition-metal'],
+  [28,'Ni','Nickel','58.69',4,10,'transition-metal'],
+  [29,'Cu','Koppar','63.55',4,11,'transition-metal'],
+  [30,'Zn','Zink','65.38',4,12,'transition-metal'],
+  [31,'Ga','Gallium','69.72',4,13,'post-transition'],
+  [32,'Ge','Germanium','72.64',4,14,'metalloid'],
+  [33,'As','Arsenik','74.92',4,15,'metalloid'],
+  [34,'Se','Selen','78.96',4,16,'nonmetal'],
+  [35,'Br','Brom','79.90',4,17,'halogen'],
+  [36,'Kr','Krypton','83.80',4,18,'noble-gas'],
+  [37,'Rb','Rubidium','85.47',5,1,'alkali-metal'],
+  [38,'Sr','Strontium','87.62',5,2,'alkaline-earth'],
+  [39,'Y','Yttrium','88.91',5,3,'transition-metal'],
+  [40,'Zr','Zirkonium','91.22',5,4,'transition-metal'],
+  [41,'Nb','Niob','92.91',5,5,'transition-metal'],
+  [42,'Mo','Molybden','95.96',5,6,'transition-metal'],
+  [43,'Tc','Teknetium','(98)',5,7,'transition-metal'],
+  [44,'Ru','Rutenium','101.1',5,8,'transition-metal'],
+  [45,'Rh','Rodium','102.9',5,9,'transition-metal'],
+  [46,'Pd','Palladium','106.4',5,10,'transition-metal'],
+  [47,'Ag','Silver','107.9',5,11,'transition-metal'],
+  [48,'Cd','Kadmium','112.4',5,12,'transition-metal'],
+  [49,'In','Indium','114.8',5,13,'post-transition'],
+  [50,'Sn','Tenn','118.7',5,14,'post-transition'],
+  [51,'Sb','Antimon','121.8',5,15,'metalloid'],
+  [52,'Te','Tellur','127.6',5,16,'metalloid'],
+  [53,'I','Jod','126.9',5,17,'halogen'],
+  [54,'Xe','Xenon','131.3',5,18,'noble-gas'],
+  [55,'Cs','Cesium','132.9',6,1,'alkali-metal'],
+  [56,'Ba','Barium','137.3',6,2,'alkaline-earth'],
+  [57,'La','Lantan','138.9',6,3,'lanthanide'],
+  [58,'Ce','Cerium','140.1',9,4,'lanthanide'],
+  [59,'Pr','Praseodym','140.9',9,5,'lanthanide'],
+  [60,'Nd','Neodym','144.2',9,6,'lanthanide'],
+  [61,'Pm','Prometium','(145)',9,7,'lanthanide'],
+  [62,'Sm','Samarium','150.4',9,8,'lanthanide'],
+  [63,'Eu','Europium','152.0',9,9,'lanthanide'],
+  [64,'Gd','Gadolinium','157.3',9,10,'lanthanide'],
+  [65,'Tb','Terbium','158.9',9,11,'lanthanide'],
+  [66,'Dy','Dysprosium','162.5',9,12,'lanthanide'],
+  [67,'Ho','Holmium','164.9',9,13,'lanthanide'],
+  [68,'Er','Erbium','167.3',9,14,'lanthanide'],
+  [69,'Tm','Tulium','168.9',9,15,'lanthanide'],
+  [70,'Yb','Ytterbium','173.1',9,16,'lanthanide'],
+  [71,'Lu','Lutetium','175.0',9,17,'lanthanide'],
+  [72,'Hf','Hafnium','178.5',6,4,'transition-metal'],
+  [73,'Ta','Tantal','180.9',6,5,'transition-metal'],
+  [74,'W','Wolfram','183.8',6,6,'transition-metal'],
+  [75,'Re','Rhenium','186.2',6,7,'transition-metal'],
+  [76,'Os','Osmium','190.2',6,8,'transition-metal'],
+  [77,'Ir','Iridium','192.2',6,9,'transition-metal'],
+  [78,'Pt','Platina','195.1',6,10,'transition-metal'],
+  [79,'Au','Guld','197.0',6,11,'transition-metal'],
+  [80,'Hg','Kvicksilver','200.6',6,12,'transition-metal'],
+  [81,'Tl','Tallium','204.4',6,13,'post-transition'],
+  [82,'Pb','Bly','207.2',6,14,'post-transition'],
+  [83,'Bi','Vismut','209.0',6,15,'post-transition'],
+  [84,'Po','Polonium','(209)',6,16,'post-transition'],
+  [85,'At','Astat','(210)',6,17,'halogen'],
+  [86,'Rn','Radon','(222)',6,18,'noble-gas'],
+  [87,'Fr','Francium','(223)',7,1,'alkali-metal'],
+  [88,'Ra','Radium','(226)',7,2,'alkaline-earth'],
+  [89,'Ac','Aktinium','(227)',7,3,'actinide'],
+  [90,'Th','Torium','232.0',10,4,'actinide'],
+  [91,'Pa','Protaktinium','231.0',10,5,'actinide'],
+  [92,'U','Uran','238.0',10,6,'actinide'],
+  [93,'Np','Neptunium','(237)',10,7,'actinide'],
+  [94,'Pu','Plutonium','(244)',10,8,'actinide'],
+  [95,'Am','Americium','(243)',10,9,'actinide'],
+  [96,'Cm','Curium','(247)',10,10,'actinide'],
+  [97,'Bk','Berkelium','(247)',10,11,'actinide'],
+  [98,'Cf','Californium','(251)',10,12,'actinide'],
+  [99,'Es','Einsteinium','(252)',10,13,'actinide'],
+  [100,'Fm','Fermium','(257)',10,14,'actinide'],
+  [101,'Md','Mendelevium','(258)',10,15,'actinide'],
+  [102,'No','Nobelium','(259)',10,16,'actinide'],
+  [103,'Lr','Lawrencium','(262)',10,17,'actinide'],
+  [104,'Rf','Rutherfordium','(267)',7,4,'transition-metal'],
+  [105,'Db','Dubnium','(270)',7,5,'transition-metal'],
+  [106,'Sg','Seaborgium','(271)',7,6,'transition-metal'],
+  [107,'Bh','Bohrium','(270)',7,7,'transition-metal'],
+  [108,'Hs','Hassium','(277)',7,8,'transition-metal'],
+  [109,'Mt','Meitnerium','(276)',7,9,'transition-metal'],
+  [110,'Ds','Darmstadtium','(281)',7,10,'transition-metal'],
+  [111,'Rg','Röntgenium','(282)',7,11,'transition-metal'],
+  [112,'Cn','Copernicium','(285)',7,12,'transition-metal'],
+  [113,'Nh','Nihonium','(286)',7,13,'post-transition'],
+  [114,'Fl','Flerovium','(289)',7,14,'post-transition'],
+  [115,'Mc','Moskovium','(290)',7,15,'post-transition'],
+  [116,'Lv','Livermorium','(293)',7,16,'post-transition'],
+  [117,'Ts','Tenness','(294)',7,17,'halogen'],
+  [118,'Og','Oganesson','(294)',7,18,'noble-gas'],
+];
+
+const grid = document.getElementById('ptable');
+const tooltip = document.getElementById('tooltip');
+const cells = {};
+for (const el of elements) cells[`${el[4]},${el[5]}`] = el;
+
+for (let r = 1; r <= 10; r++) {
+  for (let c = 1; c <= 18; c++) {
+
+    if (r === 8) {
+      if (c === 1) {
+        const gap = document.createElement('div');
+        gap.className = 'series-gap';
+        gap.style.gridColumn = '1 / -1';
+        grid.appendChild(gap);
+      }
+      continue;
+    }
+
+    if (r === 9 && c === 1) {
+      const lbl = document.createElement('div');
+      lbl.className = 'gap-label';
+      lbl.style.gridColumn = '1 / 4';
+      lbl.textContent = 'LANTANOIDER';
+      grid.appendChild(lbl);
+      continue;
+    }
+    if (r === 10 && c === 1) {
+      const lbl = document.createElement('div');
+      lbl.className = 'gap-label';
+      lbl.style.gridColumn = '1 / 4';
+      lbl.textContent = 'AKTINOIDER';
+      grid.appendChild(lbl);
+      continue;
+    }
+    if ((r === 9 || r === 10) && (c === 2 || c === 3)) continue;
+
+    if ((r === 6 && c === 3) || (r === 7 && c === 3)) {
+      const div = document.createElement('div');
+      div.className = 'element ' + (r === 6 ? 'lanthanide' : 'actinide');
+      div.style.opacity = '0.4';
+      div.innerHTML = `<span class="el-sym" style="font-size:11px">${r===6?'57–71':'89–103'}</span>`;
+      grid.appendChild(div);
+      continue;
+    }
+
+    const el = cells[`${r},${c}`];
+    const div = document.createElement('div');
+
+    if (!el) {
+      div.style.cssText = 'opacity:0;pointer-events:none;border:none;background:transparent';
+    } else {
+      const [num, sym, name, mass, , , cat] = el;
+      div.className = `element ${cat}`;
+      div.innerHTML = `
+        <span class="el-num">${num}</span>
+        <span class="el-sym">${sym}</span>
+        <span class="el-name">${name.length > 9 ? name.slice(0,8)+'…' : name}</span>
+        <span class="el-mass">${mass}</span>`;
+      div.addEventListener('mouseenter', e => showTooltip(e, el));
+      div.addEventListener('mousemove', moveTooltip);
+      div.addEventListener('mouseleave', hideTooltip);
+    }
+    grid.appendChild(div);
+  }
+}
+
+function showTooltip(e, el) {
+  const [num, sym, name, mass, row, col, cat] = el;
+  const color = getComputedStyle(document.documentElement)
+    .getPropertyValue('--' + catVar[cat]).trim();
+    
+  document.getElementById('tt-sym').textContent = sym;
+  document.getElementById('tt-sym').style.color = color;
+  document.getElementById('tt-name').textContent = name;
+  document.getElementById('tt-num').textContent = num;
+  document.getElementById('tt-mass').textContent = mass + ' u';
+  
+  document.getElementById('tt-period').textContent = row <= 7 ? row : (row === 9 ? 6 : 7);
+  
+  const groupDisplay = document.getElementById('tt-group');
+  if (cat === 'lanthanide' || cat === 'actinide') {
+    groupDisplay.textContent = '-'; 
+  } else {
+    groupDisplay.textContent = col;
+  }
+  
+  document.getElementById('tt-cat').textContent = catNames[cat] || cat;
+  tooltip.classList.add('visible');
+  moveTooltip(e);
+}
+
+function moveTooltip(e) {
+  let x = e.clientX + 16, y = e.clientY + 16;
+  if (x + 220 > window.innerWidth)  x = e.clientX - 236;
+  if (y + 220 > window.innerHeight) y = e.clientY - 220;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top  = y + 'px';
+}
+
+function hideTooltip() { tooltip.classList.remove('visible'); }
+
+let activeFilter = null;
+document.querySelectorAll('.legend-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const cat = item.dataset.cat;
+    if (activeFilter === cat) {
+      activeFilter = null;
+      item.classList.remove('active');
+      document.querySelectorAll('.element').forEach(el => el.classList.remove('dim'));
+    } else {
+      activeFilter = cat;
+      document.querySelectorAll('.legend-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      document.querySelectorAll('.element').forEach(el =>
+        el.classList.toggle('dim', !el.classList.contains(cat))
+      );
+    }
+  });
+});
+</script>
+</body>
+</html>
