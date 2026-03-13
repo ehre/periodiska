@@ -7,11 +7,9 @@
 <link rel="stylesheet" href="https://ehrencrona.org/shared.css">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-  /* === Periodiska tabellens egna variabler === */
   :root {
-    --pt-bg:           light-dark(#f0f0f0, #0a0a0f);
-    --pt-surface:      light-dark(#ffffff, #13131a);
     --pt-border:       light-dark(#d0d4da, #2a2a3a);
+    --pt-surface:      light-dark(#ffffff, #13131a);
     --pt-muted:        light-dark(#6060a0, #6060a0);
     --pt-mass:         light-dark(#aaa, #404060);
     --pt-num:          light-dark(#999, #6060a0);
@@ -31,43 +29,9 @@
     --actinide:   #e76f51;
   }
 
-  body {
-    background: var(--pt-bg);
-    color: light-dark(#1a1a1a, #e8e8f0);
-    font-family: 'IBM Plex Sans', system-ui, sans-serif;
-    min-height: 100vh;
-    overflow-x: auto;
-  }
-
-  .page {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-
-  /* Brand header – samma mönster som apex/lubpub */
-  header.brand-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 32px 24px 28px;
-    border-bottom: 1px solid var(--pt-border);
-    background: var(--pt-surface);
-  }
-
-  header.brand-header a { display: block; line-height: 0; }
-  header.brand-header img { height: 40px; width: auto; }
-
-  /* Välj rätt logga beroende på tema */
-  .logo-light { display: block; }
-  .logo-dark  { display: none;  }
-  @media (prefers-color-scheme: dark) {
-    .logo-light { display: none;  }
-    .logo-dark  { display: block; }
-  }
-
+  /* Överskrid shared.css .content som annars centrerar till smal kolumn */
   main.content {
-    flex: 1;
+    display: block;
     padding: 32px 24px 48px;
   }
 
@@ -82,7 +46,6 @@
     font-family: 'Bebas Neue', sans-serif;
     font-size: 42px;
     letter-spacing: 3px;
-    color: light-dark(#1a1a1a, #e8e8f0);
     line-height: 1;
   }
 
@@ -94,7 +57,6 @@
     text-transform: uppercase;
   }
 
-  /* Legend */
   .legend {
     display: flex;
     flex-wrap: wrap;
@@ -117,11 +79,10 @@
     user-select: none;
   }
 
-  .legend-item:hover  { border-color: var(--pt-border); color: light-dark(#1a1a1a, #e8e8f0); }
+  .legend-item:hover  { border-color: var(--pt-border); }
   .legend-item.active { border-color: currentColor; }
   .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 
-  /* Rutnät */
   .table-wrap { overflow-x: auto; }
 
   .grid {
@@ -131,7 +92,6 @@
     min-width: 990px;
   }
 
-  /* Elementkort */
   .element {
     width: 52px; height: 58px;
     border: 1px solid var(--pt-border);
@@ -167,10 +127,10 @@
 
   .element:hover::before { opacity: 0.22; }
 
-  .el-num  { font-family: 'IBM Plex Mono', monospace; font-size: 8px;  color: var(--pt-num);   line-height: 1; margin-bottom: 1px; }
+  .el-num  { font-family: 'IBM Plex Mono', monospace; font-size: 8px;  color: var(--pt-num);    line-height: 1; margin-bottom: 1px; }
   .el-sym  { font-family: 'Bebas Neue', sans-serif;   font-size: 20px; color: var(--cat-color); line-height: 1; letter-spacing: 1px; }
-  .el-name { font-family: 'IBM Plex Mono', monospace; font-size: 7px;  color: var(--pt-muted); line-height: 1; margin-top: 1px; }
-  .el-mass { font-family: 'IBM Plex Mono', monospace; font-size: 7px;  color: var(--pt-mass);  line-height: 1; }
+  .el-name { font-family: 'IBM Plex Mono', monospace; font-size: 7px;  color: var(--pt-muted);  line-height: 1; margin-top: 1px; }
+  .el-mass { font-family: 'IBM Plex Mono', monospace; font-size: 7px;  color: var(--pt-mass);   line-height: 1; }
 
   .alkali-metal    { --cat-color: var(--alkali);     }
   .alkaline-earth  { --cat-color: var(--alkaline);   }
@@ -192,7 +152,6 @@
   .series-gap { height: 16px; }
   .dim { opacity: 0.12; }
 
-  /* Tooltip */
   #tooltip {
     position: fixed;
     pointer-events: none;
@@ -219,17 +178,17 @@
     border-bottom: 1px solid var(--pt-tooltip-sep);
   }
 
-  .tt-row span:last-child { color: light-dark(#1a1a1a, #e8e8f0); }
+  .tt-row span:last-child { color: inherit; filter: brightness(1.4); }
 </style>
 </head>
 <body>
 <div class="page">
 
   <header class="brand-header">
-    <a href="https://ehrencrona.org">
-      <img class="logo-light" src="https://ehrencrona.org/ehrencrona_logo_dark.png" alt="Ehrencrona">
-      <img class="logo-dark"  src="https://ehrencrona.org/ehrencrona_logo.png"      alt="Ehrencrona">
-    </a>
+    <picture>
+      <source srcset="https://ehrencrona.org/ehrencrona_logo_darkmode.png" media="(prefers-color-scheme: dark)">
+      <img class="brand-logo" src="https://ehrencrona.org/ehrencrona_logo.png" alt="Ehrencrona logo">
+    </picture>
   </header>
 
   <main class="content">
@@ -480,22 +439,14 @@ function showTooltip(e, el) {
   const [num, sym, name, mass, row, col, cat] = el;
   const color = getComputedStyle(document.documentElement)
     .getPropertyValue('--' + catVar[cat]).trim();
-    
   document.getElementById('tt-sym').textContent = sym;
   document.getElementById('tt-sym').style.color = color;
   document.getElementById('tt-name').textContent = name;
   document.getElementById('tt-num').textContent = num;
   document.getElementById('tt-mass').textContent = mass + ' u';
-  
   document.getElementById('tt-period').textContent = row <= 7 ? row : (row === 9 ? 6 : 7);
-  
   const groupDisplay = document.getElementById('tt-group');
-  if (cat === 'lanthanide' || cat === 'actinide') {
-    groupDisplay.textContent = '-'; 
-  } else {
-    groupDisplay.textContent = col;
-  }
-  
+  groupDisplay.textContent = (cat === 'lanthanide' || cat === 'actinide') ? '-' : col;
   document.getElementById('tt-cat').textContent = catNames[cat] || cat;
   tooltip.classList.add('visible');
   moveTooltip(e);
