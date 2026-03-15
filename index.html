@@ -30,34 +30,7 @@
     --actinide:   #e76f51;
   }
 
-  /* Överskrid shared.css .content som annars centrerar till smal kolumn */
-  main.content {
-    display: block;
-    padding: 32px 24px 48px;
-  }
-
-  .pt-header {
-    display: flex;
-    align-items: baseline;
-    gap: 14px;
-    margin-bottom: 16px;
-  }
-
-  h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 42px;
-    letter-spacing: 3px;
-    line-height: 1;
-    color: var(--brand);
-  }
-
-  .subtitle {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    color: var(--pt-muted);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
+  main.content { display: block; padding: 32px 24px 48px }
 
   .legend {
     display: flex;
@@ -81,18 +54,17 @@
     user-select: none;
   }
 
-  .legend-item:hover  { border-color: var(--pt-border); }
-  .legend-item.active { border-color: currentColor; }
-  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .legend-item:hover  { border-color: var(--pt-border) }
+  .legend-item.active { border-color: currentColor }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0 }
 
-  .table-wrap { overflow-x: auto; }
+  .table-wrap { overflow-x: auto }
 
-  /* Bascelll: 56×64px (upp från 52×58) */
   .grid {
     display: grid;
     grid-template-columns: repeat(18, 56px);
     gap: 3px;
-    min-width: 1062px; /* 18*56 + 17*3 */
+    min-width: 1062px;
   }
 
   .element {
@@ -128,23 +100,23 @@
     box-shadow: 0 0 20px var(--cat-color);
   }
 
-  .element:hover::before { opacity: 0.22; }
+  .element:hover::before { opacity: 0.22 }
 
-  .el-num  { font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; color: var(--pt-num);    line-height: 1; margin-bottom: 1px; }
-  .el-sym  { font-family: 'Bebas Neue', sans-serif;   font-size: 22px;  color: var(--cat-color); line-height: 1; letter-spacing: 1px; }
-  .el-name { font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; color: var(--pt-muted);  line-height: 1; margin-top: 1px; }
-  .el-mass { font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; color: var(--pt-mass);   line-height: 1; }
+  .el-num  { font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; color: var(--pt-num);    line-height: 1; margin-bottom: 1px }
+  .el-sym  { font-family: 'Bebas Neue', sans-serif;   font-size: 22px;  color: var(--cat-color); line-height: 1; letter-spacing: 1px }
+  .el-name { font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; color: var(--pt-muted);  line-height: 1; margin-top: 1px }
+  .el-mass { font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; color: var(--pt-mass);   line-height: 1 }
 
-  .alkali-metal    { --cat-color: var(--alkali);     }
-  .alkaline-earth  { --cat-color: var(--alkaline);   }
-  .transition-metal{ --cat-color: var(--transition); }
-  .post-transition { --cat-color: var(--post-trans); }
-  .metalloid       { --cat-color: var(--metalloid);  }
-  .nonmetal        { --cat-color: var(--nonmetal);   }
-  .halogen         { --cat-color: var(--halogen);    }
-  .noble-gas       { --cat-color: var(--noble);      }
-  .lanthanide      { --cat-color: var(--lanthanide); }
-  .actinide        { --cat-color: var(--actinide);   }
+  .alkali-metal    { --cat-color: var(--alkali)     }
+  .alkaline-earth  { --cat-color: var(--alkaline)   }
+  .transition-metal{ --cat-color: var(--transition) }
+  .post-transition { --cat-color: var(--post-trans) }
+  .metalloid       { --cat-color: var(--metalloid)  }
+  .nonmetal        { --cat-color: var(--nonmetal)   }
+  .halogen         { --cat-color: var(--halogen)    }
+  .noble-gas       { --cat-color: var(--noble)      }
+  .lanthanide      { --cat-color: var(--lanthanide) }
+  .actinide        { --cat-color: var(--actinide)   }
 
   .gap-label {
     display: flex; align-items: center; justify-content: center;
@@ -152,28 +124,24 @@
     font-size: 9px; color: var(--pt-muted); letter-spacing: 1px; opacity: 0.6;
   }
 
-  .series-gap { height: 16px; }
-  .dim { opacity: 0.12; }
+  .series-gap { height: 16px }
+  .dim { opacity: 0.12 }
 
-  /* === Tablet/laptop (600–1200px): skala ner proportionellt === */
   @media (max-width: 1200px) and (min-width: 600px) {
-    .table-wrap { overflow-x: visible; }
+    .table-wrap { overflow-x: visible }
     .table-scaler {
       transform-origin: top left;
       transform: scale(var(--pt-scale, 1));
       height: calc(var(--pt-grid-h, 600px) * var(--pt-scale, 1));
     }
-    .grid { min-width: 1062px; }
+    .grid { min-width: 1062px }
   }
 
-  /* === Mobil (<600px): kompakt rutnät === */
   @media (max-width: 599px) {
-    main.content { padding: 16px 12px 32px; }
-    .pt-header { margin-bottom: 10px; }
-    h1 { font-size: 28px; }
-    .legend { gap: 5px; margin-bottom: 14px; }
-    .legend-item { font-size: 9px; padding: 2px 5px; }
-    .table-wrap { overflow-x: visible; }
+    main.content { padding: 16px 12px 32px }
+    .legend { gap: 5px; margin-bottom: 14px }
+    .legend-item { font-size: 9px; padding: 2px 5px }
+    .table-wrap { overflow-x: visible }
     .table-scaler {
       transform-origin: top left;
       transform: scale(var(--pt-scale-mobile, 1));
@@ -184,12 +152,12 @@
       gap: 2px;
       min-width: unset;
     }
-    .element { width: 30px; height: 34px; border-left-width: 2px; border-radius: 2px; }
-    .el-name, .el-mass { display: none; }
-    .el-num  { font-size: 6px; margin-bottom: 0; }
-    .el-sym  { font-size: 13px; }
-    .gap-label { font-size: 7px; }
-    .series-gap { height: 8px; }
+    .element { width: 30px; height: 34px; border-left-width: 2px; border-radius: 2px }
+    .el-name, .el-mass { display: none }
+    .el-num  { font-size: 6px; margin-bottom: 0 }
+    .el-sym  { font-size: 13px }
+    .gap-label { font-size: 7px }
+    .series-gap { height: 8px }
     #tooltip {
       position: fixed;
       left: 50% !important;
@@ -212,10 +180,10 @@
     box-shadow: 0 8px 40px light-dark(rgba(0,0,0,.12), rgba(0,0,0,.6));
   }
 
-  #tooltip.visible { display: block; }
+  #tooltip.visible { display: block }
 
-  .tt-sym  { font-family: 'Bebas Neue', sans-serif; font-size: 48px; line-height: 1; margin-bottom: 4px; }
-  .tt-name { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .tt-sym  { font-family: 'Bebas Neue', sans-serif; font-size: 48px; line-height: 1; margin-bottom: 4px }
+  .tt-name { font-size: 18px; font-weight: 600; margin-bottom: 8px }
 
   .tt-row {
     display: flex; justify-content: space-between;
@@ -225,7 +193,7 @@
     border-bottom: 1px solid var(--pt-tooltip-sep);
   }
 
-  .tt-row span:last-child { color: inherit; filter: brightness(1.4); }
+  .tt-row span:last-child { color: inherit; filter: brightness(1.4) }
 </style>
 </head>
 <body>
@@ -233,39 +201,36 @@
 
   <header class="brand-header">
     <a href="https://ehrencrona.org">
-     <picture>
-      <source srcset="https://ehrencrona.org/ehrencrona_logo_darkmode.png" media="(prefers-color-scheme: dark)">
-      <img class="brand-logo" src="https://ehrencrona.org/ehrencrona_logo.png" alt="Ehrencrona logo">
-     </picture>
+      <picture>
+        <source srcset="https://ehrencrona.org/ehrencrona_logo_darkmode.png" media="(prefers-color-scheme: dark)">
+        <img class="brand-logo" src="https://ehrencrona.org/ehrencrona_logo.png" alt="Ehrencrona logo">
+      </picture>
     </a>
   </header>
 
   <main class="content">
+    <h1 class="home-title">Periodiska Systemet</h1>
 
-    <div class="pt-header">
-      <h1>Periodiska Systemet</h1>
-      <span class="subtitle">118 grundämnen</span>
-    </div>
+    <div class="card">
+      <div class="legend">
+        <div class="legend-item" data-cat="alkali-metal"     style="color:var(--alkali)"    ><span class="legend-dot" style="background:var(--alkali)"    ></span>Alkalimetaller</div>
+        <div class="legend-item" data-cat="alkaline-earth"   style="color:var(--alkaline)"  ><span class="legend-dot" style="background:var(--alkaline)"  ></span>Jordalkalimetaller</div>
+        <div class="legend-item" data-cat="transition-metal" style="color:var(--transition)" ><span class="legend-dot" style="background:var(--transition)" ></span>Övergångsmetaller</div>
+        <div class="legend-item" data-cat="post-transition"  style="color:var(--post-trans)" ><span class="legend-dot" style="background:var(--post-trans)" ></span>Posttransitionsmetaller</div>
+        <div class="legend-item" data-cat="metalloid"        style="color:var(--metalloid)"  ><span class="legend-dot" style="background:var(--metalloid)"  ></span>Halvmetaller</div>
+        <div class="legend-item" data-cat="nonmetal"         style="color:var(--nonmetal)"   ><span class="legend-dot" style="background:var(--nonmetal)"   ></span>Icke-metaller</div>
+        <div class="legend-item" data-cat="halogen"          style="color:var(--halogen)"    ><span class="legend-dot" style="background:var(--halogen)"    ></span>Halogener</div>
+        <div class="legend-item" data-cat="noble-gas"        style="color:var(--noble)"      ><span class="legend-dot" style="background:var(--noble)"      ></span>Ädelgaser</div>
+        <div class="legend-item" data-cat="lanthanide"       style="color:var(--lanthanide)" ><span class="legend-dot" style="background:var(--lanthanide)" ></span>Lantanoider</div>
+        <div class="legend-item" data-cat="actinide"         style="color:var(--actinide)"   ><span class="legend-dot" style="background:var(--actinide)"   ></span>Aktinoider</div>
+      </div>
 
-    <div class="legend">
-      <div class="legend-item" data-cat="alkali-metal"     style="color:var(--alkali)"    ><span class="legend-dot" style="background:var(--alkali)"    ></span>Alkalimetaller</div>
-      <div class="legend-item" data-cat="alkaline-earth"   style="color:var(--alkaline)"  ><span class="legend-dot" style="background:var(--alkaline)"  ></span>Jordalkalimetaller</div>
-      <div class="legend-item" data-cat="transition-metal" style="color:var(--transition)" ><span class="legend-dot" style="background:var(--transition)" ></span>Övergångsmetaller</div>
-      <div class="legend-item" data-cat="post-transition"  style="color:var(--post-trans)" ><span class="legend-dot" style="background:var(--post-trans)" ></span>Posttransitionsmetaller</div>
-      <div class="legend-item" data-cat="metalloid"        style="color:var(--metalloid)"  ><span class="legend-dot" style="background:var(--metalloid)"  ></span>Halvmetaller</div>
-      <div class="legend-item" data-cat="nonmetal"         style="color:var(--nonmetal)"   ><span class="legend-dot" style="background:var(--nonmetal)"   ></span>Icke-metaller</div>
-      <div class="legend-item" data-cat="halogen"          style="color:var(--halogen)"    ><span class="legend-dot" style="background:var(--halogen)"    ></span>Halogener</div>
-      <div class="legend-item" data-cat="noble-gas"        style="color:var(--noble)"      ><span class="legend-dot" style="background:var(--noble)"      ></span>Ädelgaser</div>
-      <div class="legend-item" data-cat="lanthanide"       style="color:var(--lanthanide)" ><span class="legend-dot" style="background:var(--lanthanide)" ></span>Lantanoider</div>
-      <div class="legend-item" data-cat="actinide"         style="color:var(--actinide)"   ><span class="legend-dot" style="background:var(--actinide)"   ></span>Aktinoider</div>
-    </div>
-
-    <div class="table-wrap">
-      <div class="table-scaler" id="tableScaler">
-        <div class="grid" id="ptable"></div>
+      <div class="table-wrap">
+        <div class="table-scaler" id="tableScaler">
+          <div class="grid" id="ptable"></div>
+        </div>
       </div>
     </div>
-
   </main>
 </div>
 
@@ -427,7 +392,6 @@ for (const el of elements) cells[`${el[4]},${el[5]}`] = el;
 
 for (let r = 1; r <= 10; r++) {
   for (let c = 1; c <= 18; c++) {
-
     if (r === 8) {
       if (c === 1) {
         const gap = document.createElement('div');
@@ -437,7 +401,6 @@ for (let r = 1; r <= 10; r++) {
       }
       continue;
     }
-
     if (r === 9 && c === 1) {
       const lbl = document.createElement('div');
       lbl.className = 'gap-label';
@@ -455,7 +418,6 @@ for (let r = 1; r <= 10; r++) {
       continue;
     }
     if ((r === 9 || r === 10) && (c === 2 || c === 3)) continue;
-
     if ((r === 6 && c === 3) || (r === 7 && c === 3)) {
       const div = document.createElement('div');
       div.className = 'element ' + (r === 6 ? 'lanthanide' : 'actinide');
@@ -464,10 +426,8 @@ for (let r = 1; r <= 10; r++) {
       grid.appendChild(div);
       continue;
     }
-
     const el = cells[`${r},${c}`];
     const div = document.createElement('div');
-
     if (!el) {
       div.style.cssText = 'opacity:0;pointer-events:none;border:none;background:transparent';
     } else {
@@ -511,23 +471,21 @@ function moveTooltip(e) {
   tooltip.style.top  = y + 'px';
 }
 
-function hideTooltip() { tooltip.classList.remove('visible'); }
+function hideTooltip() { tooltip.classList.remove('visible') }
 
-// Responsiv skalning
 function updateScale() {
   const w = window.innerWidth;
-  const GRID_W = 1062; // 18*56 + 17*3
+  const GRID_W = 1062;
   const scaler = document.getElementById('tableScaler');
   const gridH = document.getElementById('ptable').offsetHeight;
   document.documentElement.style.setProperty('--pt-grid-h', gridH + 'px');
-
   if (w >= 600 && w <= 1200) {
-    const available = w - 48; // padding 24px × 2
+    const available = w - 48;
     const scale = Math.min(1, available / GRID_W);
     document.documentElement.style.setProperty('--pt-scale', scale);
     scaler.style.height = (gridH * scale) + 'px';
   } else if (w < 600) {
-    const MOBILE_GRID_W = 18 * 30 + 17 * 2; // 572px
+    const MOBILE_GRID_W = 18 * 30 + 17 * 2;
     const available = w - 24;
     const scale = Math.min(1, available / MOBILE_GRID_W);
     document.documentElement.style.setProperty('--pt-scale-mobile', scale);
@@ -540,7 +498,6 @@ function updateScale() {
 window.addEventListener('resize', updateScale);
 requestAnimationFrame(() => requestAnimationFrame(updateScale));
 
-// Touch-stöd: visa tooltip vid tap på mobil, stäng vid tap utanför
 document.addEventListener('touchstart', (e) => {
   const el = e.target.closest('.element');
   if (el) {
