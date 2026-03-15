@@ -69,8 +69,6 @@
     overflow: hidden;
   }
 
-  .table-scaler { transform-origin: top left }
-
   .grid {
     display: grid;
     grid-template-columns: repeat(18, 56px);
@@ -472,29 +470,30 @@ function moveTooltip(e) {
 function hideTooltip() { tooltip.classList.remove('visible') }
 
 function updateScale() {
-  const scaler  = document.getElementById('tableScaler');
-  const wrap    = document.getElementById('tableWrap');
-  const gridEl  = document.getElementById('ptable');
+  const scaler   = document.getElementById('tableScaler');
+  const wrap     = document.getElementById('tableWrap');
+  const gridEl   = document.getElementById('ptable');
   const isMobile = window.innerWidth < 600;
-  const GRID_W  = isMobile ? (18 * 30 + 17 * 2) : (18 * 56 + 17 * 3);
+  const GRID_W   = isMobile ? (18 * 30 + 17 * 2) : (18 * 56 + 17 * 3);
 
-  // Mät tillgänglig bredd direkt från wrap-elementet
   const available = wrap.getBoundingClientRect().width;
   const scale = Math.min(1, available / GRID_W);
-
   const gridH = gridEl.offsetHeight;
   document.documentElement.style.setProperty('--pt-grid-h', gridH + 'px');
 
   if (scale < 1) {
-    // Centrera skalaren genom att sätta margin-left
-    const offset = (available - GRID_W * scale) / 2;
     scaler.style.transform = `scale(${scale})`;
-    scaler.style.transformOrigin = 'top left';
-    scaler.style.marginLeft = offset + 'px';
+    scaler.style.transformOrigin = 'top center';
+    scaler.style.width = GRID_W + 'px';
+    scaler.style.marginLeft = 'auto';
+    scaler.style.marginRight = 'auto';
     scaler.style.height = (gridH * scale) + 'px';
   } else {
     scaler.style.transform = '';
+    scaler.style.transformOrigin = '';
+    scaler.style.width = '';
     scaler.style.marginLeft = '';
+    scaler.style.marginRight = '';
     scaler.style.height = '';
   }
 }
