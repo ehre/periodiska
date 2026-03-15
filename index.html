@@ -30,10 +30,13 @@
     --actinide:   #e76f51;
   }
 
+  /* main.content: block så vi kan ha full-bredd kort */
   main.content { display: block; padding: 32px 24px 48px }
 
+  /* Kortet: full bredd, ingen max-width */
   .pt-card {
     margin-top: .8rem;
+    border-radius: 12px;
   }
 
   .legend {
@@ -41,6 +44,7 @@
     flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 20px;
+    justify-content: center;
   }
 
   .legend-item {
@@ -65,7 +69,7 @@
   .table-wrap {
     display: flex;
     justify-content: center;
-    overflow-x: auto;
+    overflow: hidden;
   }
 
   .grid {
@@ -135,23 +139,21 @@
   .series-gap { height: 16px }
   .dim { opacity: 0.12 }
 
-  @media (max-width: 1200px) and (min-width: 600px) {
-    .table-wrap { overflow-x: visible; justify-content: flex-start }
+  @media (max-width: 1200px) {
     .table-scaler {
-      transform-origin: top left;
+      transform-origin: top center;
       transform: scale(var(--pt-scale, 1));
       height: calc(var(--pt-grid-h, 600px) * var(--pt-scale, 1));
     }
-    .grid { min-width: 1062px }
   }
 
   @media (max-width: 599px) {
-    main.content { padding: 16px 12px 32px }
+    main.content { padding: 16px 0 32px }
+    .pt-card { border-radius: 0 }
     .legend { gap: 5px; margin-bottom: 14px }
     .legend-item { font-size: 9px; padding: 2px 5px }
-    .table-wrap { overflow-x: visible; justify-content: flex-start }
     .table-scaler {
-      transform-origin: top left;
+      transform-origin: top center;
       transform: scale(var(--pt-scale-mobile, 1));
       height: calc(var(--pt-grid-h, 600px) * var(--pt-scale-mobile, 1));
     }
@@ -486,22 +488,25 @@ function hideTooltip() { tooltip.classList.remove('visible') }
 function updateScale() {
   const w = window.innerWidth;
   const GRID_W = 1062;
+  const CARD_PAD = 56; // 28px × 2 från shared.css .card padding
   const scaler = document.getElementById('tableScaler');
   const gridH = document.getElementById('ptable').offsetHeight;
   document.documentElement.style.setProperty('--pt-grid-h', gridH + 'px');
-  if (w >= 600 && w <= 1200) {
-    const available = w - 48;
-    const scale = Math.min(1, available / GRID_W);
-    document.documentElement.style.setProperty('--pt-scale', scale);
-    scaler.style.height = (gridH * scale) + 'px';
-  } else if (w < 600) {
+
+  if (w < 600) {
     const MOBILE_GRID_W = 18 * 30 + 17 * 2;
-    const available = w - 24;
+    const available = w - CARD_PAD;
     const scale = Math.min(1, available / MOBILE_GRID_W);
     document.documentElement.style.setProperty('--pt-scale-mobile', scale);
     scaler.style.height = (gridH * scale) + 'px';
+  } else if (w <= 1200) {
+    const available = w - 48 - CARD_PAD; // main padding 24×2 + card padding 28×2
+    const scale = Math.min(1, available / GRID_W);
+    document.documentElement.style.setProperty('--pt-scale', scale);
+    scaler.style.height = (gridH * scale) + 'px';
   } else {
     scaler.style.height = '';
+    document.documentElement.style.setProperty('--pt-scale', '1');
   }
 }
 
