@@ -32,6 +32,10 @@
 
   main.content { display: block; padding: 32px 24px 48px }
 
+  .pt-card {
+    margin-top: .8rem;
+  }
+
   .legend {
     display: flex;
     flex-wrap: wrap;
@@ -58,7 +62,11 @@
   .legend-item.active { border-color: currentColor }
   .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0 }
 
-  .table-wrap { overflow-x: auto }
+  .table-wrap {
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+  }
 
   .grid {
     display: grid;
@@ -128,7 +136,7 @@
   .dim { opacity: 0.12 }
 
   @media (max-width: 1200px) and (min-width: 600px) {
-    .table-wrap { overflow-x: visible }
+    .table-wrap { overflow-x: visible; justify-content: flex-start }
     .table-scaler {
       transform-origin: top left;
       transform: scale(var(--pt-scale, 1));
@@ -141,7 +149,7 @@
     main.content { padding: 16px 12px 32px }
     .legend { gap: 5px; margin-bottom: 14px }
     .legend-item { font-size: 9px; padding: 2px 5px }
-    .table-wrap { overflow-x: visible }
+    .table-wrap { overflow-x: visible; justify-content: flex-start }
     .table-scaler {
       transform-origin: top left;
       transform: scale(var(--pt-scale-mobile, 1));
@@ -209,9 +217,11 @@
   </header>
 
   <main class="content">
-    <h1 class="home-title">Periodiska Systemet</h1>
+    <div class="content-inner">
+      <h1 class="home-title">Periodiska Systemet</h1>
+    </div>
 
-    <div class="card">
+    <div class="card pt-card">
       <div class="legend">
         <div class="legend-item" data-cat="alkali-metal"     style="color:var(--alkali)"    ><span class="legend-dot" style="background:var(--alkali)"    ></span>Alkalimetaller</div>
         <div class="legend-item" data-cat="alkaline-earth"   style="color:var(--alkaline)"  ><span class="legend-dot" style="background:var(--alkaline)"  ></span>Jordalkalimetaller</div>
